@@ -1,0 +1,43 @@
+pkgbase = blazium-bin
+	pkgdesc = Blazium Engine - Prebuilt binary from GitHub
+	pkgver = 0.6.725
+	pkgrel = 1
+	url = https://blazium.app
+	arch = i686
+	arch = x86_64
+	license = MIT
+	makedepends = desktop-file-utils
+	depends = glibc
+	source = blazium-bin-README.md::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/README.md
+	source = blazium-bin-LICENSE.txt::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/LICENSE.txt
+	source = blazium-bin-icon.svg::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/icon.svg
+	source = blazium-bin-app.blazium.Blazium.desktop::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/misc/dist/linux/app.blazium.Blazium.desktop
+	source = blazium-bin-app.blazium.Blazium.xml::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/misc/dist/linux/app.blazium.Blazium.xml
+	source = blazium-bin-app.blazium.Blazium.appdata.xml::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/misc/dist/linux/app.blazium.Blazium.appdata.xml
+	source = blazium-bin-blazium.6::https://github.com/blazium-games/blazium/raw/refs/tags/v0.6.725/misc/dist/linux/blazium.6
+	sha256sums = a20aad01a27a8f2bf260cd68084f1da1ed79420fd3ae07f8ba7df5d7270b6129
+	sha256sums = b7f1b31903ac85bf586b92d6f1c7f59cc006f70633027e153eeab41800197393
+	sha256sums = 5278752fae1abeca8981ff3abfac0549cb62722d988f5acf1c436d71ce460f22
+	sha256sums = b0255ed28cd6a4bc6aa13b59117869e8cb558988ffe593edf7d607b3aece74dc
+	sha256sums = a6295f55b65c0fb697ea7df3689014d6fca458fffb49f3301573469edae22b13
+	sha256sums = 5bc00eb760521ec3d77cc4f7201fe2a733b3f69abbb3097661a295639d275536
+	sha256sums = 29120244e27a4eb1a04ce60bd46fc0e32dc5f58e8c76c5a18aef21bcb4f234e6
+	source_i686 = https://github.com/blazium-games/blazium/releases/download/v0.6.725/BlaziumEditor_v0.6.725_linux.x86_32.zip
+	source_i686 = https://github.com/blazium-games/blazium/releases/download/v0.6.725/BlaziumEditor_v0.6.725_linux.mono.x86_32.zip
+	sha256sums_i686 = bf5e778f5eba860bbb8d57801fd5c470f23e693b5d49003263ca6ab53f8a161e
+	sha256sums_i686 = bcffb62fe2fb292af33302e5f765e922fe4e7d948d8454a53b8b7b46b83da3bb
+	source_x86_64 = https://github.com/blazium-games/blazium/releases/download/v0.6.725/BlaziumEditor_v0.6.725_linux.x86_64.zip
+	source_x86_64 = https://github.com/blazium-games/blazium/releases/download/v0.6.725/BlaziumEditor_v0.6.725_linux.mono.x86_64.zip
+	sha256sums_x86_64 = 06028f1bcc155fc4e747faac195ccb3c4377793a069f0af34170947fa1eb6988
+	sha256sums_x86_64 = 775043eac6d6ef4830f0dd11a35256e1ddf1891953701b7a11ed6903f72fcf1b
+
+pkgname = blazium-bin
+	depends = glibc
+	provides = blazium=0.6.725
+	conflicts = blazium
+
+pkgname = blazium-mono-bin
+	depends = glibc
+	depends = dotnet-sdk
+	provides = blazium-mono=0.6.725
+	conflicts = blazium-mono
