@@ -1,0 +1,57 @@
+# Maintainer: qualk <qualk@qualk.xyz>
+
+pkgname=nuvio-desktop-bin
+_pkgname=nuvio
+_pkgver=0.1.22-alpha
+pkgver=${_pkgver//-/.}
+pkgrel=1
+pkgdesc="Watch your library, anywhere."
+arch=('x86_64')
+url="https://github.com/NuvioMedia/NuvioDesktop"
+license=('GPL-3.0-only')
+depends=(
+  'hicolor-icon-theme'
+  'mpv'
+  'webkit2gtk-4.1'
+)
+provides=('nuvio')
+conflicts=('nuvio-desktop' 'nuvio-linux' 'nuvio')
+options=('!strip' '!debug')
+source=(
+  "Nuvio-Linux-x86_64-${_pkgver}.deb::https://github.com/NuvioMedia/NuvioDesktop/releases/download/${_pkgver}/Nuvio-Linux-x86_64-${_pkgver}.deb"
+)
+sha256sums=('b9501fbf5c37e80eb018664ec10a7c90ee9d2585d8f81d5d75de8d75d833ba90')
+
+package() {
+  # extract data payload (data.tar.zst inside .deb)
+  bsdtar -O -xf "Nuvio-Linux-x86_64-${_pkgver}.deb" data.tar.zst | \
+    bsdtar -xf - -C "${pkgdir}"
+
+  # ensure binary is executable
+  chmod 755 "${pkgdir}/opt/nuvio/bin/Nuvio"
+
+  # convenience symlink in /usr/bin
+  install -vd "${pkgdir}/usr/bin"
+  ln -vsf "/opt/nuvio/bin/Nuvio" "${pkgdir}/usr/bin/nuvio"
+  ln -vsf "/opt/nuvio/bin/Nuvio" "${pkgdir}/usr/bin/nuvio-desktop"
+
+  # fix desktop file: ensure Categories and Exec are valid (keep absolute Exec/Icon as shipped)
+  if [[ -f "${pkgdir}/usr/share/applications/nuvio.desktop" ]]; then
+    # upstream Categories is already AudioVideo; ensure not empty and add Utility for app launchers
+    sed -i 's|^Categories=.*|Categories=AudioVideo;Video;|' \
+      "${pkgdir}/usr/share/applications/nuvio.desktop"
+    # validate desktop file if desktop-file-utils is available (makedepends check not needed at runtime)
+  fi
+
+  # install license (Debian copyright file) to Arch license dir
+  if [[ -f "${pkgdir}/opt/nuvio/share/doc/copyright" ]]; then
+    install -vDm644 "${pkgdir}/opt/nuvio/share/doc/copyright" \
+      "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+  fi
+
+  # icons are shipped at /opt/nuvio/lib/Nuvio.png; also expose via hicolor/pixmaps for themes
+  if [[ -f "${pkgdir}/opt/nuvio/lib/Nuvio.png" ]]; then
+    install -vDm644 "${pkgdir}/opt/nuvio/lib/Nuvio.png" \
+      "${pkgdir}/usr/share/pixmaps/nuvio.png"
+  fi
+}

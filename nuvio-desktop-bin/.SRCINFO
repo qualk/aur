@@ -1,0 +1,18 @@
+pkgbase = nuvio-desktop-bin
+	pkgdesc = Watch your library, anywhere.
+	pkgver = 0.1.21
+	pkgrel = 1
+	url = https://github.com/NuvioMedia/NuvioDesktop
+	arch = x86_64
+	license = GPL-3.0-only
+	depends = hicolor-icon-theme
+	depends = mpv
+	depends = webkit2gtk-4.1
+	provides = nuvio-desktop
+	conflicts = nuvio-desktop
+	options = !strip
+	options = !debug
+	source = Nuvio-Linux-x86_64-0.1.21-alpha.deb::https://github.com/NuvioMedia/NuvioDesktop/releases/download/0.1.21-alpha/Nuvio-Linux-x86_64-0.1.21-alpha.deb
+	sha256sums = 30f336bba00c4b70da858e0746cdcde7f46fbb11a9c5f928d48f715ff0a467a7
+
+pkgname = nuvio-desktop-bin

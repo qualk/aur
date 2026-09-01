@@ -1,0 +1,79 @@
+# Maintainer: qualk <qualk@qualk.xyz>
+
+pkgname=apps2samsung-bin
+pkgver=2.7.8
+pkgrel=1
+pkgdesc="One-click installer for Samsung Tizen TVs — Jellyfin, Moonlight & community catalog"
+arch=('x86_64' 'aarch64')
+url="https://github.com/Apps2Samsung/Apps2Samsung"
+license=('MIT')
+depends=(
+  'fontconfig'
+  'hicolor-icon-theme'
+  'icu'
+  'krb5'
+  'libglvnd'
+  'openssl'
+  'zlib'
+)
+optdepends=(
+  'nmap: TV discovery via network scan'
+  'xdg-utils: open URLs/files with default handler'
+)
+provides=('apps2samsung' 'jellyfin2samsung')
+conflicts=('apps2samsung' 'jellyfin2samsung' 'apps2samsung-beta-bin')
+options=('!strip' '!debug')
+source=(
+  "LICENSE::https://raw.githubusercontent.com/Apps2Samsung/Apps2Samsung/beta/LICENSE"
+)
+source_x86_64=(
+  "Apps2Samsung-v${pkgver}-linux-x64.tar.gz::https://github.com/Apps2Samsung/Apps2Samsung/releases/download/v${pkgver}/Apps2Samsung-v${pkgver}-linux-x64.tar.gz"
+)
+source_aarch64=(
+  "Apps2Samsung-v${pkgver}-linux-arm64.tar.gz::https://github.com/Apps2Samsung/Apps2Samsung/releases/download/v${pkgver}/Apps2Samsung-v${pkgver}-linux-arm64.tar.gz"
+)
+sha256sums=('SKIP')
+sha256sums_x86_64=('3d9fbd32d7caf41ba219cc55261863ef511a089f0ac441f9f105416ecb1795ab')
+sha256sums_aarch64=('770300a6d1f9497d9f517a052ea94903b0cda5c3e6e78a01bb6db680739a415c')
+
+package() {
+  # upstream tarballs are self-contained .NET single-file publishes, no top-level dir
+  # layout mirrors the .deb: /opt/apps2samsung
+  install -vd "${pkgdir}/opt/apps2samsung"
+  # CARCH-aware source file: $srcdir contains only the tarball for the current arch
+  local _tarball
+  _tarball=$(echo "${srcdir}"/Apps2Samsung-v*.tar.gz)
+  bsdtar -xf "${_tarball}" -C "${pkgdir}/opt/apps2samsung"
+
+  chmod 755 "${pkgdir}/opt/apps2samsung/Apps2Samsung"
+  [[ -f "${pkgdir}/opt/apps2samsung/libSkiaSharp.so" ]] && chmod 755 "${pkgdir}/opt/apps2samsung/libSkiaSharp.so"
+  [[ -f "${pkgdir}/opt/apps2samsung/libHarfBuzzSharp.so" ]] && chmod 755 "${pkgdir}/opt/apps2samsung/libHarfBuzzSharp.so"
+
+  # Downloads/Logs were world-writable under /opt in 2.7.8 deb; create for compatibility
+  # beta (2.7.9+) moves these to XDG_CACHE_HOME/XDG_STATE_HOME, but keep harmless
+  install -vd -m 777 "${pkgdir}/opt/apps2samsung/Downloads"
+  install -vd -m 777 "${pkgdir}/opt/apps2samsung/Logs"
+
+  install -vd "${pkgdir}/usr/bin"
+  ln -vsf "/opt/apps2samsung/Apps2Samsung" "${pkgdir}/usr/bin/apps2samsung"
+
+  # desktop entry (mirrors deb's /usr/share/applications/apps2samsung.desktop)
+  install -vd "${pkgdir}/usr/share/applications"
+  cat > "${pkgdir}/usr/share/applications/apps2samsung.desktop" << DESKTOP
+[Desktop Entry]
+Name=Apps2Samsung
+Exec=/opt/apps2samsung/Apps2Samsung
+Icon=apps2samsung
+Type=Application
+Categories=Utility;
+DESKTOP
+
+  # icon (deb installs 256x256 hicolor + png fallback)
+  if [[ -f "${pkgdir}/opt/apps2samsung/Assets/jelly2sams.png" ]]; then
+    install -vDm644 "${pkgdir}/opt/apps2samsung/Assets/jelly2sams.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/apps2samsung.png"
+    install -vDm644 "${pkgdir}/opt/apps2samsung/Assets/jelly2sams.png" "${pkgdir}/usr/share/pixmaps/apps2samsung.png"
+  fi
+
+  # license (tarball has no LICENSE file)
+  install -vDm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
