@@ -1,0 +1,83 @@
+# Maintainer: qualk <qualk@qualk.xyz>
+
+pkgname=lapce-nightly-bin
+pkgver=20260902.r2ba9854
+pkgrel=1
+_pkgname=lapce
+pkgdesc="A lightning fast, powerful, and extensible code editor written in Rust"
+arch=('x86_64' 'aarch64')
+url="https://lapce.dev"
+_url="https://github.com/lapce/lapce"
+license=('Apache-2.0')
+provides=("lapce")
+conflicts=('lapce' 'lapce-nightly')
+depends=(
+  'expat'
+  'fontconfig'
+  'freetype2'
+  'gcc-libs'
+  'gtk3'
+  'libxcb'
+  'libxkbcommon'
+  'openssl'
+)
+options=('!lto')
+
+# nightly is rolling `nightly` tag (0.4.6+2ba9854 at 2ba9854 currently).
+# pkgver() generates YYYYMMDD.r<short-commit> from the nightly release API so
+# `makepkg --printsrcinfo` / `makepkg` always reflects the current nightly
+# without manually bumping pkgver. e.g. 20260902.r2ba9854
+_commit=2ba9854cd674ea4500fa3b944fcec4056ff658d0
+
+pkgver() {
+  local _tag _date _short
+  _tag=$(curl -s https://api.github.com/repos/lapce/lapce/releases/tags/nightly)
+  _date=$(printf '%s' "$_tag" | awk -F '"' '/"published_at":/{print $4}' | xargs -I{} date -d {} +%Y%m%d 2>/dev/null)
+  _short=$(printf '%s' "$_tag" | awk -F '"' '/"target_commitish":/{print $4}' | cut -c1-7)
+  # fallback to static _commit/date if API fails (offline build)
+  [[ -z "$_date" ]] && _date=$(date +%Y%m%d)
+  [[ -z "$_short" ]] && _short=${_commit:0:7}
+  printf "%s.r%s" "$_date" "$_short"
+}
+
+source=(
+  "dev.lapce.lapce.desktop::${_url}/raw/${_commit}/extra/linux/dev.lapce.lapce.desktop"
+  "dev.lapce.lapce.metainfo.xml::${_url}/raw/${_commit}/extra/linux/dev.lapce.lapce.metainfo.xml"
+  "logo.png::${_url}/raw/${_commit}/extra/images/logo.png"
+)
+source_x86_64=(
+  "${_url}/releases/download/nightly/lapce-linux-amd64.tar.gz"
+)
+source_aarch64=(
+  "${_url}/releases/download/nightly/lapce-linux-arm64.tar.gz"
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+)
+
+sha256sums_x86_64=(
+  'dcb436dbe5668c7ee8e7807063ea5b638af23db217ec3cd98c1a1a3bf7bfc38d'
+)
+sha256sums_aarch64=(
+  '9421f8a6f34fbc5bd1359293af2a86e6bb2fb56e1e910c301400fdcba3df4a00'
+)
+
+prepare() {
+  sed -i dev.lapce.lapce.desktop \
+    -e "s/Name=Lapce/Name=Lapce Nightly/" \
+    -e "s/Exec=lapce/Exec=lapce-nightly/"
+  sed -i 's/dev\.lapce\.lapce/dev.lapce.lapce-nightly/' dev.lapce.lapce.{desktop,metainfo.xml}
+}
+
+check() {
+  Lapce/lapce -V 2>&1 | head -n 5
+}
+
+package() {
+  install -D Lapce/lapce "${pkgdir}/usr/bin/lapce-nightly"
+  install -Dm644 dev.lapce.lapce.desktop "${pkgdir}/usr/share/applications/dev.lapce.lapce-nightly.desktop"
+  install -Dm644 dev.lapce.lapce.metainfo.xml "${pkgdir}/usr/share/metainfo/dev.lapce.lapce-nightly.metainfo.xml"
+  install -Dm644 logo.png "${pkgdir}/usr/share/pixmaps/dev.lapce.lapce-nightly.png"
+}

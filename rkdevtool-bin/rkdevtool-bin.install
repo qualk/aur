@@ -1,5 +1,7 @@
 post_install() {
-  echo ">>> rkdevtool: unplug/replug your Rockchip device (or re-enter Maskrom) if it was already connected."
+  echo
+  echo "  rkdevtool: unplug/replug your Rockchip device (or re-enter Maskrom) if it was already connected."
+  echo
 }
 
 post_upgrade() {

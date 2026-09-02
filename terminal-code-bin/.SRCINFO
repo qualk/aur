@@ -1,0 +1,21 @@
+pkgbase = terminal-code-bin
+	pkgdesc = VS Code inside your terminal
+	pkgver = 0.1.13
+	pkgrel = 1
+	url = https://tode.sh
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	depends = terminal-browser
+	provides = tode=0.1.13
+	conflicts = tode
+	options = !strip
+	options = !debug
+	source = LICENSE::https://github.com/zenbu-labs/terminal-code/raw/v0.1.13/LICENSE
+	sha256sums = 75144b0fa61c38989a1a057a018806a2da36e99f1f8850ba6146d9f53bdd646f
+	source_x86_64 = https://github.com/zenbu-labs/terminal-code/releases/download/v0.1.13/tode-linux-x64.tar.gz
+	sha256sums_x86_64 = ccc2a0c3a9c257fc42ced77e6f1b4ce52ba0cc1c4529a601f6557a524bb4d173
+	source_aarch64 = https://github.com/zenbu-labs/terminal-code/releases/download/v0.1.13/tode-linux-arm64.tar.gz
+	sha256sums_aarch64 = 71bc98e9497b5f303db291c57117fcd81124b5e7cc5bf61b0b0ccc9f681e44eb
+
+pkgname = terminal-code-bin

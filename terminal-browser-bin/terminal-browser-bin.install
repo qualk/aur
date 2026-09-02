@@ -1,0 +1,11 @@
+post_install() {
+  echo
+  echo "  terminal-browser is installed to /opt/terminal-browser"
+  echo "  Requires a terminal with the kitty graphics protocol (kitty, ghostty, etc.)"
+  echo "  Optional user setup (editor integration / skills): terminal-browser setup"
+  echo
+}
+
+post_upgrade() {
+  post_install
+}

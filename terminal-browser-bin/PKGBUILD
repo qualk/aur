@@ -1,0 +1,67 @@
+# Maintainer: qualk <qualk@qualk.xyz>
+
+pkgname=terminal-browser-bin
+pkgver=0.7.6
+pkgrel=1
+pkgdesc='A browser that runs directly inside your terminal'
+arch=('x86_64' 'aarch64')
+url='https://terminal-browser.com'
+_url='https://github.com/zenbu-labs/terminal-browser'
+license=('MIT')
+depends=(
+  'alsa-lib'
+  'gtk3'
+  'libdrm'
+  'libxss'
+  'libxtst'
+  'mesa'
+  'nss'
+)
+optdepends=(
+  'xdg-utils: open external URLs with the desktop default handler'
+)
+provides=("terminal-browser")
+conflicts=('terminal-browser')
+options=('!strip' '!debug')
+install="${pkgname}.install"
+
+_tag="v${pkgver}"
+source=(
+  "LICENSE::${_url}/raw/${_tag}/LICENSE"
+)
+source_x86_64=(
+  "${_url}/releases/download/${_tag}/terminal-browser-linux-x64.tar.gz"
+)
+source_aarch64=(
+  "${_url}/releases/download/${_tag}/terminal-browser-linux-arm64.tar.gz"
+)
+sha256sums=(
+  '75144b0fa61c38989a1a057a018806a2da36e99f1f8850ba6146d9f53bdd646f'
+)
+sha256sums_x86_64=(
+  'be367e7d942c5b6fe39a327105e8dc3e4412d92474ae2ba42ab056452ec4e2c4'
+)
+sha256sums_aarch64=(
+  '7150fa97460d9834bfd6bf1e4a71f6e538adbc7fd2ed6879d0457fccca323d46'
+)
+
+package() {
+  install -vd "${pkgdir}/opt/terminal-browser"
+  cp -a "${srcdir}/terminal-browser/." "${pkgdir}/opt/terminal-browser/"
+
+  chmod 4755 "${pkgdir}/opt/terminal-browser/electron/chrome-sandbox"
+
+  install -vd "${pkgdir}/usr/bin"
+  cat > "${pkgdir}/usr/bin/terminal-browser" << 'EOF'
+#!/usr/bin/env sh
+exec /opt/terminal-browser/bin/terminal-browser "$@"
+EOF
+  chmod 755 "${pkgdir}/usr/bin/terminal-browser"
+
+  install -Dm644 "${srcdir}/LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 "${pkgdir}/opt/terminal-browser/electron/LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE.electron"
+  install -Dm644 "${pkgdir}/opt/terminal-browser/electron/LICENSES.chromium.html" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSES.chromium.html"
+}

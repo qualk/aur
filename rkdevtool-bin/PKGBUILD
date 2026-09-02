@@ -1,7 +1,7 @@
 # Maintainer: qualk <qualk@qualk.xyz>
 
 pkgname=rkdevtool-bin
-pkgver=0.13.0
+pkgver=0.14.0
 pkgrel=1
 pkgdesc="Cross-platform desktop GUI for Rockchip USB flashing, built with Tauri 2 + Vue 3"
 arch=('x86_64')
@@ -17,9 +17,9 @@ provides=('rkdevtool')
 conflicts=('rkdevtool')
 options=('!strip' '!debug')
 source=(
-  "rkdevtool_${pkgver}_amd64.deb::https://github.com/hiifong/rkdevtool/releases/download/v${pkgver}/rkdevtool_${pkgver}_amd64.deb"
+  "rkdevtool_${pkgver}_amd64.deb::${url}/releases/download/v${pkgver}/rkdevtool_${pkgver}_amd64.deb"
 )
-sha256sums=('1d66172bfdd32b5a9d84bfcdb677e75c809eeb70cf647d783563cff3d99f115a')
+sha256sums=('3863d8a93bb33a9445707dcdaffad0f7ea85e54ed93a6ae44475f82e590021c5')
 install="${pkgname}.install"
 
 package() {

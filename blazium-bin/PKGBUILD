@@ -112,7 +112,7 @@ package_blazium-bin() {
 
   install -vd "${pkgdir}/usr/bin"
   cat > "${pkgdir}/usr/bin/${pkgname%-bin}" << WRAPPER
-#!/bin/sh
+#!/usr/bin/env sh
 if [ -n "\$WAYLAND_DISPLAY" ]; then
     exec /usr/lib/${_pkgbase}/${pkgname%-bin} --display-driver wayland "\$@"
 else
@@ -157,7 +157,7 @@ package_blazium-mono-bin() {
 
   install -vd "${pkgdir}/usr/bin"
   cat > "${pkgdir}/usr/bin/${pkgname%-bin}" << WRAPPER
-#!/bin/sh
+#!/usr/bin/env sh
 if [ -n "\$WAYLAND_DISPLAY" ]; then
     exec /usr/lib/${_pkgbase}/${pkgname%-bin} --display-driver wayland "\$@"
 else
